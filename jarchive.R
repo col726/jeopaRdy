@@ -75,7 +75,7 @@ j_df["round"] <- NA
 
 j_df$round[clue_order_number <= 30] <- "Jeopardy"
 j_df$round[clue_order_number > 30] <- "Double Jeopardy"
-j_df$round[clue_order_number = 61] <- "Final Jeopardy"
+j_df$round[clue_order_number == 61] <- "Final Jeopardy"
 
 j_df["category"] <- NA
 
@@ -89,5 +89,5 @@ j_df$category[j_df$round=="Final Jeopardy"]<- categories_fj
 
 j_df <- merge(j_df, scores, by="clue_order_number")
 
-write.csv(j_df, "C:/Users/cmckenna/Desktop/j_archive.csv")
+write.csv(j_df, "j_archive.csv")
 View(j_df)
