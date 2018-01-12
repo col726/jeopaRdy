@@ -1,14 +1,16 @@
 library("rvest", lib.loc="~/R/win-library/3.4")
 
-jarchive_page <- read_html("http://www.j-archive.com/showgame.php?game_id=5637")
-jarchive_page_responses <- read_html("http://www.j-archive.com/showgameresponses.php?game_id=5637")
-jarchive_page_scores <- read_html("http://www.j-archive.com/showscores.php?game_id=5637")
+episodeID <- 5878
+
+jarchive_page <- read_html(paste("http://www.j-archive.com/showgame.php?game_id=",episodeID, sep=''))
+jarchive_page_responses <- read_html(paste("http://www.j-archive.com/showgameresponses.php?game_id=",episodeID, sep=''))
+jarchive_page_scores <- read_html(paste("http://www.j-archive.com/showscores.php?game_id=", episodeID, sep=''))
 
 clue_values <- jarchive_page %>%
   html_nodes(".clue_value_daily_double, .clue_value") %>%
   html_text()
 
-clue_values[61] <- "n/a"
+clue_values[length(clue_values) + 1] <- "n/a"
 
 clues <- jarchive_page %>%
    html_nodes(".clue_text") %>%
@@ -28,11 +30,12 @@ clue_order_number_dj <- jarchive_page %>%
   html_text() %>%
   as.numeric()
 
-clue_order_number_dj <- clue_order_number_dj + 30
+
+clue_order_number_dj <- clue_order_number_dj + length(clue_order_number_j)
 
 clue_order_number <- c(clue_order_number_j, clue_order_number_dj)
 
-clue_order_number[61] <- 61
+clue_order_number[length(clue_order_number) + 1] <- length(clue_order_number) + 1
 
 clue_answers <- jarchive_page_responses %>%
   html_nodes(".correct_response") %>%
@@ -61,10 +64,10 @@ colnames(scores_dj)[5] <- "other"
 
 scores_fj <- as.data.frame(scores_fj[1])
 scores_fj <- scores_fj[1,]
-scores_fj["clue_order_number"] <- 61
+scores_fj["clue_order_number"] <- length(clue_order_number)
 scores_fj["other"] <- NA
 
-scores_dj$clue_order_number <- scores_dj$clue_order_number + 30
+scores_dj$clue_order_number <- scores_dj$clue_order_number + length(clue_order_number_j)
 
 scores <- rbind(scores, scores_dj, scores_fj)
 
@@ -73,9 +76,9 @@ j_df<-cbind.data.frame(clue_values, clues, clue_answers, clue_order_number)
 
 j_df["round"] <- NA
 
-j_df$round[clue_order_number <= 30] <- "Jeopardy"
-j_df$round[clue_order_number > 30] <- "Double Jeopardy"
-j_df$round[clue_order_number == 61] <- "Final Jeopardy"
+j_df$round[clue_order_number <= length(clue_order_number_j)] <- "Jeopardy"
+j_df$round[clue_order_number > length(clue_order_number_j)] <- "Double Jeopardy"
+j_df$round[clue_order_number == length(clue_order_number)] <- "Final Jeopardy"
 
 j_df["category"] <- NA
 
