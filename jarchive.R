@@ -1,6 +1,6 @@
 library("rvest", lib.loc="~/R/win-library/3.4")
 
-episodeID <- 5877
+episodeID <- 5870
 
 jarchive_page <- read_html(paste("http://www.j-archive.com/showgame.php?game_id=",episodeID, sep=''))
 jarchive_page_responses <- read_html(paste("http://www.j-archive.com/showgameresponses.php?game_id=",episodeID, sep=''))
@@ -71,28 +71,29 @@ if(length(clue_values) > 0)
   
   scores_dj$clue_order_number <- scores_dj$clue_order_number + length(clue_order_number_j)
   
-  scores <- rbind(scores, scores_dj, scores_fj)
-  
+  scores_df <- rbind(scores, scores_dj, scores_fj)
     
-  j_df<-cbind.data.frame(clue_values, clues, clue_answers, clue_order_number)
+  clues_df<-cbind.data.frame(clue_values, clues, clue_answers, clue_order_number)
   
-  j_df["round"] <- NA
+  clues_df["round"] <- NA
   
-  j_df$round[clue_order_number <= length(clue_order_number_j)] <- "Jeopardy"
-  j_df$round[clue_order_number > length(clue_order_number_j)] <- "Double Jeopardy"
-  j_df$round[clue_order_number == length(clue_order_number)] <- "Final Jeopardy"
+  clues_df$round[clue_order_number <= length(clue_order_number_j)] <- "Jeopardy"
+  clues_df$round[clue_order_number > length(clue_order_number_j)] <- "Double Jeopardy"
+  clues_df$round[clue_order_number == length(clue_order_number)] <- "Final Jeopardy"
   
-  j_df["category"] <- NA
+  clues_df["category"] <- NA
   
   categories_j <- categories[1:6]
   categories_dj <- categories[7:12]
   categories_fj <- categories[13]
   
-  j_df$category[j_df$round=="Jeopardy"]<- categories_j
-  j_df$category[j_df$round=="Double Jeopardy"]<- categories_dj
-  j_df$category[j_df$round=="Final Jeopardy"]<- categories_fj
+  clues_df$category[j_df$round=="Jeopardy"]<- categories_j
+  clues_df$category[j_df$round=="Double Jeopardy"]<- categories_dj
+  clues_df$category[j_df$round=="Final Jeopardy"]<- categories_fj
   
-  j_df <- merge(j_df, scores, by="clue_order_number")
+  clues_df["jid"] <-(episodeID * 100) + clues_df["clue_order_number"]
+  
+  j_df <- merge(clues_df, scores_df, by="clue_order_number")
   
   write.csv(j_df, "j_archive.csv")
   View(j_df)
