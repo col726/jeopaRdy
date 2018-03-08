@@ -56,9 +56,9 @@ create_clues <- function(episodeID){
     categories_dj <- categories[7:12]
     categories_fj <- categories[13]
     
-    clues_df$category[j_df$round=="Jeopardy"]<- categories_j
-    clues_df$category[j_df$round=="Double Jeopardy"]<- categories_dj
-    clues_df$category[j_df$round=="Final Jeopardy"]<- categories_fj
+    clues_df$category[clues_df$round=="Jeopardy"]<- categories_j
+    clues_df$category[clues_df$round=="Double Jeopardy"]<- categories_dj
+    clues_df$category[clues_df$round=="Final Jeopardy"]<- categories_fj
     
     clues_df["jid"] <-(episodeID * 100) + clues_df["clue_order_number"]
     
