@@ -1,8 +1,24 @@
 source("clues.R")
 
-x <- create_clues(5870)
+final <- create_clues(5870)
 
-View(x)
+for(id in 5800:5850){
+  
+  x <- create_clues(id)
+  
+  if(!is.null(x))
+  {
+    final <-rbind(final, x)
+    sprintf("Episode %s added to data set.", id)
+  }
+  else{
+    sprintf("Skipping episode %s. No data returned.", id)
+  }
+}
+
+
+
+View(final)
 
 
 # jarchive_page_scores <- read_html(paste("http://www.j-archive.com/showscores.php?game_id=", episodeID, sep=''))
