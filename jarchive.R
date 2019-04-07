@@ -25,5 +25,6 @@ for(id in startEp:endEp){
   cat(sprintf("Processed %g%% of all episodes.\n", prog))
 }
 
-View(final)
 write.csv(final, file="jeopardy.csv")
+
+View(final)
